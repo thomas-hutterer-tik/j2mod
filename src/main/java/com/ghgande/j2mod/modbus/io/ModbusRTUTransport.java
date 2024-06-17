@@ -321,7 +321,8 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
                         int[] crc = ModbusUtil.calculateCRC(inBuffer, 0, dlength); // does not include CRC
                         if (ModbusUtil.unsignedByteToInt(inBuffer[dlength]) != crc[0] || ModbusUtil.unsignedByteToInt(inBuffer[dlength + 1]) != crc[1]) {
                             if (logger.isDebugEnabled()) {
-                                logger.debug("CRC should be {}, {}", Integer.toHexString(crc[0]), Integer.toHexString(crc[1]));
+                                logger.debug("CRC should be {}, {} inBuffer={}", Integer.toHexString(crc[0]), Integer.toHexString(crc[1]), 
+                                		ModbusUtil.toHex(inBuffer, 0, dlength + 2));
                             }
 
                             // Drain the input in case the frame was misread and more
@@ -380,6 +381,8 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
                                 logger.debug("Read message not meant for us: {}", ModbusUtil.toHex(byteInputOutputStream.getBuffer(), 0, byteInputOutputStream.size()));
                             }
                         }
+                        // as the buffer might have been bumped due to more than 256 bytes input, we reset it to the original inBuffer
+                        byteInputOutputStream.reset(inBuffer);
                     }
                 }
             }

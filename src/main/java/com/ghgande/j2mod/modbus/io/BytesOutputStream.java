@@ -70,6 +70,17 @@ public class BytesOutputStream extends FastByteArrayOutputStream implements Data
         count = 0;
     }
 
+    /**
+     * Resets this <tt>BytesInputStream</tt> using the given
+     * byte[] as new input buffer.
+     *
+     * @param data a byte array with data to be read.
+     */
+    public void reset(byte[] data) {
+        buf = data;
+        count = 0;
+    }
+
     @Override
     public void writeBoolean(boolean v) throws IOException {
         dataOutputStream.writeBoolean(v);
